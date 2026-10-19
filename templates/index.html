@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Cricket Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    
+    <header class="flex justify-between items-center pb-6 border-b border-slate-800">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-white">🏏 Live Cricket Dashboard</h1>
+        <p class="text-xs text-slate-400 mt-1">CricAPI + SQLite Cache Layer</p>
+      </div>
+
+      <div class="flex items-center gap-3 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
+        <span id="cache-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+        <span id="cache-label" class="font-medium text-slate-300">Checking...</span>
+        <span id="cache-ttl" class="text-slate-500 font-mono"></span>
+        <button onclick="loadMatches()" class="bg-indigo-600 hover:bg-indigo-500 px-2 py-1 rounded text-white font-medium ml-2 transition">
+          Refresh
+        </button>
+      </div>
+    </header>
+
+    <div class="my-6">
+      <input 
+        id="search-box"
+        type="text" 
+        placeholder="Filter by team or match name..." 
+        oninput="renderCards()"
+        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+      />
+    </div>
+
+    <div id="loading" class="text-center py-16 text-slate-400 text-sm">Fetching match feed...</div>
+    <div id="match-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+  </div>
+
+  <script>
+    let matchesList = [];
+
+    async function loadMatches() {
+      const dot = document.getElementById("cache-dot");
+      const label = document.getElementById("cache-label");
+      const ttl = document.getElementById("cache-ttl");
+
+      try {
+        const res = await fetch("/api/matches");
+        const json = await res.json();
+
+        if (json.error) throw new Error(json.error);
+
+        matchesList = json.data || [];
+        const isHit = json.source === "CACHE_HIT";
+        dot.className = isHit ? "w-2.5 h-2.5 rounded-full bg-emerald-400" : "w-2.5 h-2.5 rounded-full bg-amber-400";
+        label.textContent = isHit ? "SQLite HIT" : "CricAPI MISS";
+        ttl.textContent = `(${json.ttl_remaining_seconds}s left)`;
+
+        document.getElementById("loading").classList.add("hidden");
+        renderCards();
+      } catch (e) {
+        document.getElementById("loading").textContent = "Error: " + e.message;
+      }
+    }
+
+    function renderCards() {
+      const grid = document.getElementById("match-grid");
+      const query = document.getElementById("search-box").value.toLowerCase();
+      grid.innerHTML = "";
+
+      const filtered = matchesList.filter(m => (m.name || "").toLowerCase().includes(query));
+
+      filtered.forEach(m => {
+        let scores = '<p class="text-xs text-slate-400">Scorecard pending</p>';
+        if (m.score && m.score.length > 0) {
+          scores = m.score.map(s => `
+            <div class="flex justify-between text-xs py-0.5">
+              <span class="text-slate-300">${s.inning}</span>
+              <span class="font-mono font-bold text-emerald-400">${s.r}/${s.w} (${s.o} ov)</span>
+            </div>
+          `).join("");
+        }
+
+        const card = document.createElement("div");
+        card.className = "bg-slate-800/70 border border-slate-700/80 rounded-xl p-4 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-2">
+              <span class="uppercase font-semibold tracking-wider bg-slate-700 px-2 py-0.5 rounded text-[10px] text-slate-200">
+                ${m.matchType || "MATCH"}
+              </span>
+              <span>${m.status || ""}</span>
+            </div>
+            <h2 class="font-semibold text-white text-sm mb-3">${m.name}</h2>
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mb-2">
+              ${scores}
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-2 truncate">${m.venue || "Venue not specified"}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    loadMatches();
+  </script>
+</body>
+</html>

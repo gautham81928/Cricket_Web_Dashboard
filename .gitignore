@@ -1,0 +1,7 @@
+scraper.env
+*.env
+venv/
+cricket_cache.db
+*.db
+__pycache__/
+*.pyc

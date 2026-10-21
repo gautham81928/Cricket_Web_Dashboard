@@ -6,7 +6,7 @@ Tech Stack:
 - Backend: Python, Flask
 - Caching and local storage: SQLite3
 - HTTP and API integration: Requests, Python-Dotenv, CricAPI
-- Frontend: HTML, JavaScript, Tailwind CSS
+- Frontend: HTML, Tailwind CSS
 
 How to Use:
 # 1. Setup Virtual Environment:

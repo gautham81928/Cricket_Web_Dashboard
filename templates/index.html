@@ -42,6 +42,34 @@
   <script>
     let matchesList = [];
 
+    function getInningTeam(score, teams) {
+      const inning = typeof score?.inning === "string" ? score.inning.trim() : "";
+      const parsed = inning.match(/^(.*?)\s+Inning\s+(\d+)$/i);
+      const teamName = parsed ? parsed[1].trim().toLowerCase() : "";
+      return teams.find(
+        team => typeof team.name === "string" && team.name.trim().toLowerCase() === teamName
+      );
+    }
+
+    function getInningLabel(score, match, index) {
+      const inning = typeof score.inning === "string" ? score.inning.trim() : "";
+      const parsed = inning.match(/^(.*?)\s+Inning\s+(\d+)$/i);
+      const teams = Array.isArray(match.teamInfo) ? match.teamInfo : [];
+      const team = getInningTeam(score, teams);
+
+      if (team && parsed) return `${team.name} Inning ${parsed[2]}`;
+
+      if (index > 0 && parsed && teams.length === 2) {
+        const firstInningsTeam = getInningTeam(match.score?.[0], teams);
+        const opposingTeam = teams.find(other => other !== firstInningsTeam);
+        if (firstInningsTeam && opposingTeam) {
+          return `${opposingTeam.name} Inning ${parsed[2]}`;
+        }
+      }
+
+      return `Inning ${index + 1}`;
+    }
+
     async function loadMatches() {
       const dot = document.getElementById("cache-dot");
       const label = document.getElementById("cache-label");
@@ -76,9 +104,9 @@
       filtered.forEach(m => {
         let scores = '<p class="text-xs text-slate-400">Scorecard pending</p>';
         if (m.score && m.score.length > 0) {
-          scores = m.score.map(s => `
+          scores = m.score.map((s, index) => `
             <div class="flex justify-between text-xs py-0.5">
-              <span class="text-slate-300">${s.inning}</span>
+              <span class="text-slate-300">${getInningLabel(s, m, index)}</span>
               <span class="font-mono font-bold text-emerald-400">${s.r}/${s.w} (${s.o} ov)</span>
             </div>
           `).join("");

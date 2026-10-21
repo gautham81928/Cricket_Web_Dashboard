@@ -10,11 +10,11 @@ Tech Stack:
 
 How to Use:
 1. Setup Virtual Environment:
-# macOS/Linux
+macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
 
-# Windows
+Windows
 python -m venv venv
 venv\Scripts\activate
 

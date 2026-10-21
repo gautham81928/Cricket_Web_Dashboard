@@ -23,9 +23,9 @@ python -m venv venv
 venv\Scripts\activate
 
 # 2. Install Dependencies:
-pip install flask 
-pip install requests 
-pip install python-dotenv
+- pip install flask 
+- pip install requests 
+- pip install python-dotenv
 
 # 3. Open the .env file and replace "your_actual_api_key_here" with your API key
 CRICAPI_KEY=your_actual_api_key_here

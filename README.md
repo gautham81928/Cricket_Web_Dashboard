@@ -1,6 +1,6 @@
 # Cricket_Web_Dashboard
 
-This is a web dashboard where you can view live scores of all types of cricket matches such as T20, ODI, and Tests. This web application was built using Python, with the Flask framework, and Tailwind CSS. The data is collected from CricAPI, and is stored locally in SQLite. To conserve the daily API rate limit, a caching layer has been implemented so when the website is refreshed, the response time is instant. With this, the external API consumption has been reduced by over 90%.
+This is a web dashboard where you can view live scores of all types of cricket matches such as T20, ODI, and Tests. This web application was built using Python, with the Flask framework, and Tailwind CSS. The data is collected from CricAPI, and is stored locally in an SQLite database. To conserve the daily API rate limit, a caching layer has been implemented so when the website is refreshed, the response time is instant. With this, the external API consumption has been reduced by over 90%.
 
 Tech Stack:
 - Backend: Python, Flask

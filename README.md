@@ -9,29 +9,31 @@ Tech Stack:
 - Frontend: HTML, JavaScript, Tailwind CSS
 
 How to Use:
-1. Setup Virtual Environment:
-macOS/Linux
+# 1. Setup Virtual Environment:
+- macOS/Linux:
+
 python3 -m venv venv
 source venv/bin/activate
 
-Windows
+- Windows:
+
 python -m venv venv
 venv\Scripts\activate
 
-2. Install Dependencies:
+# 2. Install Dependencies:
 pip install flask 
 pip install requests 
 pip install python-dotenv
 
-3. Open the .env file and replace "your_actual_api_key_here" with your API key
+# 3. Open the .env file and replace "your_actual_api_key_here" with your API key
 CRICAPI_KEY=your_actual_api_key_here
 
-4. Run client.py to make sure the matches and their scores are showing up in the CLI
+# 4. Run client.py to make sure the matches and their scores are showing up in the CLI
 python client.py
 
-5. Run app.py to view the data in a web interface.
+# 5. Run app.py to view the data in a web interface.
 python app.py
 
-6. Open your web browser and copy paste the local host web url:
+# 6. Open your web browser and copy paste the local host web url:
 http://127.0.0.1:5000
 
